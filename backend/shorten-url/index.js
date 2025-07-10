@@ -5,7 +5,7 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body)
     const shortCode = nanoid(10)
-    const expirationDate = body.expirationDate ? new Date(body.expirationDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) 
+    const expirationDate = body.expirationDate ? new Date(body.expirationDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
     const newDoc = new RedirectUrl({
       url: body.url,
@@ -15,14 +15,22 @@ exports.handler = async (event) => {
     })
 
     await newDoc.save()
-  
+
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS"
+      },
       body: JSON.stringify({ shortCode }),
     };
   } catch (error) {
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS"
+      },
       body: JSON.stringify({ error: 'Internal Server Error' }),
     };
   }
